@@ -31,12 +31,10 @@ def train_with_file(filename, nameface):
         label = np.asarray(users, dtype=np.int32)
         
         recognizer.train(image_array, label) # Send face and label to dataset
-        print "face recognized"
-        
     except TypeError:
         print "Error reading file! Check filename!"
         
-def train_with_folder(folder, nameface):
+def train_with_folder(folderlocation, nameface):
 
     for filename in os.listdir(folderlocation):
         try:
@@ -77,10 +75,10 @@ def recognize_face(filename):
         # print distance
         
         if distance <= 50:
-            print ("This is %s.\nDistance is %s.")%(name,distance)
+            return ("This is %s.\nDistance is %s.")%(name,distance)
             
         else:
-            print "Image not recognized"
+            return "Image not recognized"
         
     except TypeError:
         print "Error reading file! Check filename!"

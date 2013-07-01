@@ -9,7 +9,7 @@ urls = ('/', 'faceTrainer',
 class faceTrainer:
     def GET(self):
         # web.header("Content-Type","text/html; charset=utf-8")
-        return render.index()
+        return render.index(' ')
 
     def POST(self):
         person = web.input(trainfile={})
@@ -26,12 +26,13 @@ class faceTrainer:
             
             name = person['nameface'] # gets the name of the person
             fc.train_with_file(newFilename, name)
-            fc.check_faces()
-        raise web.seeother('/')
+            output = '%s was added to the model' %name
+        return render.index(output)
 
 class faceRecognizer:
     def GET(self):
-        return render.rec()
+        result = 'No results yet'
+        return render.rec(result)
         
     def POST(self):
         person = web.input(recognizefile={})
@@ -45,8 +46,10 @@ class faceRecognizer:
             fout.write(person.recognizefile.file.read()) # writes the uploaded file to the newly created file.
             fout.close() # closes the file, upload complete.
             
-            fc.recognize_face(newFilename)
-        raise web.seeother('/rec')
+            result = fc.recognize_face(newFilename)
+            # print render(result)
+            
+        return render.rec(result)
         
         
 if __name__ == "__main__":
