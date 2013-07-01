@@ -1,6 +1,6 @@
-# The following class creates a FaceRecognizer model. Specifical a Local Binary Pattern Histrogram(LBPH).
+# The following class creates a FaceRecognizer model. Specifically a Local Binary Pattern Histrogram(LBPH).
 # The LBPH model is designed to be used with smaller databases (images per person). It also has the advantage to be more
-# robust against lightining variations. Also it's not neccessary to resize images and the dataset can be updated without retrain 
+# robust against lightining variations. Also it's not neccessary to resize images and the dataset can be updated without retraining 
 # the entire model.
 
 import cv2

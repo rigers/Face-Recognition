@@ -16,6 +16,8 @@ image_array = [] # Setup an array
 users = []
 label = []
 
+# train model by giving it an image and associating it with a name
+
 def train_with_file(filename, nameface):
     global user
     try:
@@ -33,10 +35,11 @@ def train_with_file(filename, nameface):
         recognizer.train(image_array, label) # Send face and label to dataset
     except TypeError:
         print "Error reading file! Check filename!"
-        
+
+# train model by giving it a folder with images of same person and associating those images with a name        
 def train_with_folder(folderlocation, nameface):
 
-    for filename in os.listdir(folderlocation):
+    for filename in os.listdir(folderlocation): # go through each file at a time
         try:
             print filename
             image = cv2.imread(os.path.join(folderlocation, filename), cv2.IMREAD_GRAYSCALE) # Load image                
@@ -59,21 +62,24 @@ def train_with_folder(folderlocation, nameface):
                 
             recognizer.train(image_array, label) # Send face and label to dataset
             
-        
+# matches an image with another image in the model. It also provides a "distance" result showing how close 
+# given image is to the training image        
 def recognize_face(filename):
             
     try:
         image = cv2.imread(filename, cv2.IMREAD_GRAYSCALE) # Load image
         
-        prediction = recognizer.predict(image)
+        if any(name_label_dict):
+            prediction = recognizer.predict(image)
+        else:
+            return "No images added yet"
                         
         # prediction_accuracy = accuracy(image, image_array[int(prediction[0])-1])
         
         name = name_label_dict[int(prediction[0])]
         distance = prediction[1]
         
-        # print distance
-        
+        # only give result if distance is small        
         if distance <= 50:
             return ("This is %s.\nDistance is %s.")%(name,distance)
             
@@ -82,9 +88,6 @@ def recognize_face(filename):
         
     except TypeError:
         print "Error reading file! Check filename!"
-            
-def check_faces():
-    print name_label_dict
-
-            
-    
+        
+        
+        

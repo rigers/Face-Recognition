@@ -1,57 +1,58 @@
-import face_recognition as fc
-import web
+import face_recognition as fc #import facial recognition functions
+import web #import web.py framework
 
-render = web.template.render('templates/')
+
+# copies the user specified file to a local file
+
+def copy_file(filedir, person):
+    if 'imagefile' in person: # to check if the file-object is created
+        filepath=person.imagefile.filename.replace('\\','/') # replaces the windows-style slashes with linux ones.
+        filename=filepath.split('/')[-1] # splits the and chooses the last part (the filename with extension)
+        newFilename = filedir +'\\'+ filename # gets the filename and location of cloned file.
+        fout = open(newFilename,'wb') # creates the file where the uploaded file should be stored
+        fout.write(person.imagefile.file.read()) # writes the uploaded file to the newly created file.
+        fout.close() # closes the file, upload complete.
+        return newFilename # copy file location 
+
+        
+render = web.template.render('templates/') # uses the html files as templates
 
 urls = ('/', 'faceTrainer',
-        '/rec', 'faceRecognizer')
+        '/rec', 'faceRecognizer') #define urls for each class
 
 class faceTrainer:
     def GET(self):
-        # web.header("Content-Type","text/html; charset=utf-8")
-        return render.index(' ')
+        return render.index(' ') #render training page with no output 
 
-    def POST(self):
-        person = web.input(trainfile={})
-        filedir = 'C:\Documents and Settings\Rigs\Desktop\RESTOpenCV\saved_faces' # change this to the directory you want to store the file in.
-        if 'trainfile' in person: # to check if the file-object is created
-            filepath=person.trainfile.filename.replace('\\','/') # replaces the windows-style slashes with linux ones.
-            filename=filepath.split('/')[-1] # splits the and chooses the last part (the filename with extension)
-            newFilename = filedir +'\\'+ filename # gets the filename and location of cloned file.
-            print newFilename
-            fout = open(newFilename,'wb') # creates the file where the uploaded file should be stored
-            fout.write(person.trainfile.file.read()) # writes the uploaded file to the newly created file.
-            fout.close() # closes the file, upload complete.
+        
+    def POST(self): 
+        person = web.input(imagefile={}) # read user input
+        filedir = 'C:\Documents and Settings\Rigs\Desktop\RESTOpenCV\saved_faces' # directory to store the file in.
+        newFilename = copy_file(filedir, person)
+  
+        name = person['nameface'] # gets the name of the person
+        fc.train_with_file(newFilename, name) # calls the training function from face_recognizer module
+        
+        output = '%s was added to the model' %name
             
-            
-            name = person['nameface'] # gets the name of the person
-            fc.train_with_file(newFilename, name)
-            output = '%s was added to the model' %name
-        return render.index(output)
+        return render.index(output) # renders the page with the output
 
 class faceRecognizer:
     def GET(self):
         result = 'No results yet'
-        return render.rec(result)
+        return render.rec(result) # render recognizing page with no output
         
     def POST(self):
-        person = web.input(recognizefile={})
-        filedir = 'C:\Documents and Settings\Rigs\Desktop\RESTOpenCV\other_faces' # change this to the directory you want to store the file in.
-        if 'recognizefile' in person: # to check if the file-object is created
-            filepath=person.recognizefile.filename.replace('\\','/') # replaces the windows-style slashes with linux ones.
-            filename=filepath.split('/')[-1] # splits the and chooses the last part (the filename with extension)
-            newFilename = filedir +'\\'+ filename # gets the filename and location of cloned file.
-            print newFilename
-            fout = open(newFilename,'wb') # creates the file where the uploaded file should be stored
-            fout.write(person.recognizefile.file.read()) # writes the uploaded file to the newly created file.
-            fout.close() # closes the file, upload complete.
+        person = web.input(imagefile={}) # read user input
+        filedir = 'C:\Documents and Settings\Rigs\Desktop\RESTOpenCV\other_faces' # directory to store the file in.
+        newFilename = copy_file(filedir, person)
             
-            result = fc.recognize_face(newFilename)
-            # print render(result)
+        result = fc.recognize_face(newFilename) # calls the recognizing function from face_recognizer module
+                                                # and stores results  
             
-        return render.rec(result)
+        return render.rec(result) # render the page with the output.
         
         
 if __name__ == "__main__":
-   app = web.application(urls, globals()) 
-   app.run()
+   app = web.application(urls, globals()) # defines the application
+   app.run() # runs the application
