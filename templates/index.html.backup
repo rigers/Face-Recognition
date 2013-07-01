@@ -1,0 +1,32 @@
+
+<html>
+	<head>
+		<title>Face Recognizer
+        
+        </title>
+	</head>
+	<body>
+		<h1>
+			<span style="font-size:16px;">Face Recognizer.</span></h1>
+		<p>
+			This simple web app utilizes OpenCV framework to analyze and recognize faces. 
+            In order for a face to be recognized the model needs to be trained. 
+            To train the model submit an image of a face and type a name. 
+            The more different images submited (i.e different facial expressions) the more accurate the model is at recognizing a face. 
+            To recognize a face upload a different image from the ones used to train the model and the app will give the results.</p>
+		
+			&nbsp;
+            <form method="POST" enctype="multipart/form-data" action="">
+            Upload Training File: <br/>
+            <input type="file" name="myfile" required/><br/>
+            </form>
+            
+            &nbsp;
+            <form method="POST" enctype="multipart/form-data" action="">
+            <input type="file" name="myfile" required/>
+            <br/>
+            <input type="submit" value="Recognize"/>
+            </form>
+            
+	</body>
+</html>
